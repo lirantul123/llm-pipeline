@@ -1,0 +1,14 @@
+{
+  "name": "llm-pipeline",
+  "description": "Human-in-the-loop Clarify → Architect → Plan → Build → Review pipeline for Claude Code.",
+  "owner": {
+    "name": "Liran Tulchinski"
+  },
+  "plugins": [
+    {
+      "name": "llm-pipeline",
+      "source": ".",
+      "description": "Clarify → Architect → Plan → Build → Review pipeline with human checkpoints, parallel builder subagents and an independent reviewer."
+    }
+  ]
+}

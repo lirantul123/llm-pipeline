@@ -1,0 +1,45 @@
+name: validate
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check JSON manifests parse
+        run: |
+          python3 -m json.tool .claude-plugin/plugin.json > /dev/null
+          python3 -m json.tool .claude-plugin/marketplace.json > /dev/null
+
+      - name: Check versions match CHANGELOG
+        run: |
+          v=$(python3 -c "import json;print(json.load(open('.claude-plugin/plugin.json'))['version'])")
+          grep -q "^## \[$v\]" CHANGELOG.md || { echo "plugin.json version $v has no CHANGELOG entry"; exit 1; }
+
+      - name: Check SKILL.md frontmatter, appendix sections and size
+        run: |
+          f=skills/llm-pipeline/SKILL.md
+          head -1 "$f" | grep -qx -- '---' || { echo "SKILL.md missing frontmatter"; exit 1; }
+          grep -q '^name: llm-pipeline$' "$f"
+          grep -q '^description: ' "$f"
+          for sec in "### A. Architect" "### B. Planner" "### C. Builder" "### D. Reviewer"; do
+            grep -q "^$sec" "$f" || { echo "missing appendix section: $sec"; exit 1; }
+          done
+          lines=$(wc -l < "$f"); [ "$lines" -lt 500 ] || { echo "SKILL.md is $lines lines (keep under 500)"; exit 1; }
+
+      - name: Shellcheck install.sh
+        run: shellcheck install.sh
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: claude plugin validate
+        run: |
+          npm install -g @anthropic-ai/claude-code
+          claude plugin validate . --strict

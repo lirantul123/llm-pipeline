@@ -1,0 +1,10 @@
+{
+  "name": "llm-pipeline",
+  "version": "1.0.0",
+  "description": "Clarify → Architect → Plan → Build → Review pipeline with human checkpoints, parallel builder subagents and an independent reviewer.",
+  "author": { "name": "Liran Tulchinski" },
+  "homepage": "https://github.com/lirantul123/llm-pipeline",
+  "repository": "https://github.com/lirantul123/llm-pipeline",
+  "license": "MIT",
+  "keywords": ["pipeline", "planning", "subagents", "code-review", "human-in-the-loop"]
+}
