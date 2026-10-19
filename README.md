@@ -52,17 +52,76 @@ Your task
 
 ## Install the skill
 
-Copy the skill file to your Claude Code skills directory:
+Claude Code only finds skills laid out as **`~/.claude/skills/<skill-name>/SKILL.md`**: a folder named after the skill, holding a file named exactly `SKILL.md`. A loose `.md` file placed directly in `~/.claude/skills/` is **ignored**, and the skill won't show up.
+
+### 1. Clone the repo
 
 ```bash
-cp skill/llm-pipeline.md ~/.claude/skills/llm-pipeline.md
+git clone https://github.com/lirantul123/llm-pipeline.git
+cd llm-pipeline
+```
+
+### 2. Install: pick one option
+
+**Option A: Symlink (recommended).** Edits to the repo apply automatically, so there's nothing to re-copy:
+
+```bash
+mkdir -p ~/.claude/skills/llm-pipeline
+ln -sf "$(pwd)/skill/llm-pipeline.md" ~/.claude/skills/llm-pipeline/SKILL.md
+```
+
+**Option B: Copy.**
+
+```bash
+mkdir -p ~/.claude/skills/llm-pipeline
+cp skill/llm-pipeline.md ~/.claude/skills/llm-pipeline/SKILL.md
+```
+
+**Option C: Project-only install.** The skill is available only inside one repo. Run this from that repo's root:
+
+```bash
+mkdir -p .claude/skills/llm-pipeline
+cp /path/to/llm-pipeline/skill/llm-pipeline.md .claude/skills/llm-pipeline/SKILL.md
+```
+
+### 3. Restart Claude Code
+
+Skills load at session start. Exit any running session and start a new one:
+
+```bash
+claude
+```
+
+### 4. Verify
+
+```bash
+ls ~/.claude/skills/llm-pipeline/
+# expected: SKILL.md
+```
+
+In Claude Code, type `/` and look for **`/llm-pipeline`** in the list.
+
+### Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `/llm-pipeline` not listed | File is at `~/.claude/skills/llm-pipeline.md` (flat) | Move it: `mkdir -p ~/.claude/skills/llm-pipeline && mv ~/.claude/skills/llm-pipeline.md ~/.claude/skills/llm-pipeline/SKILL.md` |
+| Still not listed after moving | Session started before install | Restart Claude Code |
+| Not listed | File named `skill.md` or `llm-pipeline.md` inside the folder | Rename it to exactly `SKILL.md` |
+| Not listed | Frontmatter missing or broken | First lines of `SKILL.md` must be the `---` / `name:` / `description:` / `---` block |
+| Symlink broken | Repo moved or deleted | Re-run the `ln -sf` command with the new path |
+
+### Uninstall
+
+```bash
+rm -rf ~/.claude/skills/llm-pipeline
 ```
 
 ---
 
 ## Usage
 
-Activate the skill in any Claude Code session:
+After installing and restarting, activate the skill in any Claude Code session:
 
 ```
 /llm-pipeline Build a REST API for a todo list with JWT auth
@@ -183,7 +242,7 @@ Default max retries: 3. Override: `max [N] retries` at any checkpoint.
 ```
 llm-pipeline/
 ├── skill/
-│   └── llm-pipeline.md   ← install this to ~/.claude/skills/
+│   └── llm-pipeline.md   ← install as ~/.claude/skills/llm-pipeline/SKILL.md
 ├── prompts/
 │   ├── architect.txt
 │   ├── plan.txt
