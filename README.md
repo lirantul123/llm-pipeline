@@ -4,6 +4,8 @@ A Claude Code skill that runs any task through a 4-stage LLM pipeline with human
 
 **No server. No API. Just activate the skill and go.**
 
+📖 **[Interactive docs & live pipeline visualization →](https://claude.ai/artifact/SxE3UKhSE63vPpRZKx6j7r?sk=Bxsn-kjGipAK_4GFFe_VRg)**
+
 ---
 
 ## How it works
